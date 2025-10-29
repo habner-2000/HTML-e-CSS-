@@ -1,0 +1,122 @@
+/**
+ * Função principal para validar o formulário de cadastro.
+ * Ela será chamada quando o formulário for enviado.
+ * @param {Event} event - O objeto do evento de submissão do formulário.
+ */
+function validarFormulario(event) {
+    // 1. Previne o envio padrão do formulário.
+    // Isso é crucial para que o JavaScript possa fazer a validação primeiro.
+    event.preventDefault();
+
+    // 2. Obtém os elementos do formulário e dos campos.
+    const form = document.getElementById('cadastroForm');
+    const nomeInput = document.getElementById('nome');
+    const emailInput = document.getElementById('email');
+    const senhaInput = document.getElementById('senha');
+    const erroDisplay = document.getElementById('erros'); // Elemento para exibir mensagens de erro
+
+    // 3. Obtém os valores dos campos.
+    const nome = nomeInput.value.trim(); // Usa trim() para remover espaços em branco no início/fim
+    const email = emailInput.value.trim();
+    const senha = senhaInput.value;
+
+    // 4. Inicializa um array para armazenar quaisquer mensagens de erro.
+    let erros = [];
+
+    // --- Lógica de Validação ---
+
+    // 5. Validação do Campo NOME: Não pode estar vazio.
+    if (nome === '') {
+        erros.push('O campo Nome não pode estar vazio.');
+    }
+
+    // 6. Validação do Campo E-MAIL: Precisa ser um formato válido.
+    // Usa uma expressão regular (regex) para verificar o formato básico de e-mail.
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexEmail.test(email)) {
+        erros.push('O campo E-mail precisa ter um formato válido (ex: nome@dominio.com).');
+    }
+
+    // 7. Validação do Campo SENHA: Precisa ter no mínimo 8 caracteres.
+    if (senha.length < 8) {
+        erros.push('A senha precisa ter no mínimo 8 caracteres.');
+    }
+
+    // --- Tratamento dos Erros ---
+
+    // 8. Verifica se há erros.
+    if (erros.length > 0) {
+        // A. Há erros: Impede o envio do formulário e exibe as mensagens.
+
+        // Limpa qualquer erro anterior e exibe os novos em formato de lista.
+        erroDisplay.innerHTML = '<ul>' + erros.map(erro => `<li>${erro}</li>`).join('') + '</ul>';
+        erroDisplay.style.color = 'red'; // Estiliza o texto de erro para destacar
+
+        // Opcionalmente, pode-se adicionar uma classe de erro aos campos inválidos.
+        // Exemplo: nomeInput.classList.add('campo-invalido');
+
+        // Retorna false para indicar que a validação falhou.
+        return false;
+    } else {
+        // B. Sem erros: O formulário é considerado válido.
+
+        // Limpa quaisquer mensagens de erro anteriores.
+        erroDisplay.innerHTML = '';
+
+        // Exibe uma mensagem de sucesso (ou realiza o envio).
+        alert('Cadastro realizado com sucesso! (O formulário seria enviado agora)');
+
+        // Neste ponto, em um cenário real, você faria:
+        // form.submit(); // Para enviar o formulário para o servidor,
+        // OU:
+        // Uma chamada fetch/axios para uma API (mais comum em aplicações modernas).
+
+        // Por enquanto, apenas retornamos true (e a função preventDefault já impediu o envio real).
+        return true;
+    }
+}
+
+// 9. Adiciona um "ouvinte de evento" (event listener) ao formulário.
+// Quando o evento 'submit' ocorrer no formulário com id 'cadastroForm',
+// a função 'validarFormulario' será executada.
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('cadastroForm');
+    if (form) {
+        form.addEventListener('submit', validarFormulario);
+    } else {
+        console.error("Elemento com ID 'cadastroForm' não encontrado. Verifique seu HTML.");
+    }
+});
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário de Cadastro</title>
+</head>
+<body>
+
+    <h2>Cadastro de Usuário</h2>
+
+    <form id="cadastroForm">
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+        </div>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div id="erros"></div>
+
+    <script src="seu_arquivo_de_validacao.js"></script>
+
+</body>
+</html>
